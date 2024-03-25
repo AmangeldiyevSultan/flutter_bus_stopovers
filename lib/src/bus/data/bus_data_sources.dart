@@ -23,11 +23,15 @@ final class BusDataSourceImpl implements BusDataSource {
     required String to,
     required String date,
   }) async {
-    final endpoint =
-        '/api/avibus/search_trips_cities/?departure_city=$from&destination_city=$to&&date=$date';
+    const endpoint = '/api/avibus/search_trips_cities/';
 
     final response = await _client.get<dynamic>(
       endpoint,
+      queryParameters: {
+        'departure_city': from,
+        'destination_city': to,
+        'date': date,
+      },
     );
 
     return TripList.fromJson(response.data as Map<String, dynamic>);
