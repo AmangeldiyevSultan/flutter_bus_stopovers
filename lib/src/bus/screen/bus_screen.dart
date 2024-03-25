@@ -87,63 +87,80 @@ class _BusScreenState extends State<BusScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(15),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      DestinationTile(
-                        controller: fromController,
-                        labelName: 'From',
-                        icon: const Icon(
-                          Icons.gps_fixed,
-                          size: 30,
+                child: RefreshIndicator(
+                  color: Colors.black,
+                  onRefresh: () async {
+                    if (fromController.text.isNotEmpty &&
+                        toController.text.isNotEmpty &&
+                        dateController.text.isNotEmpty) {
+                      _busBloc.add(
+                        BusEvent.fetchBuses(
+                          from: fromController.text,
+                          to: toController.text,
+                          date: dateController.text,
                         ),
-                      ),
-                      const VerticalDividerStep(
-                        leftPadding: 14,
-                      ),
-                      DestinationTile(
-                        controller: toController,
-                        labelName: 'To',
-                        icon: const Icon(
-                          Icons.location_on_outlined,
-                          size: 30,
+                      );
+                    }
+                  },
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DestinationTile(
+                          controller: fromController,
+                          labelName: 'From',
+                          icon: const Icon(
+                            Icons.gps_fixed,
+                            size: 30,
+                          ),
                         ),
-                      ),
-                      const Gap(15),
-                      TextButton(
-                        onPressed: _datePicker,
-                        child: DefaultText(
-                          dateController.text.isEmpty
-                              ? 'Choose a date'
-                              : 'Date: ${dateController.text}',
-                          color: Colors.blue,
+                        const VerticalDividerStep(
+                          leftPadding: 14,
                         ),
-                      ),
-                      const Gap(15),
-                      Center(
-                        child: CtmElevatedButton(
-                          onPressed: _findBuses,
-                          child: const DefaultText('Find Buses'),
+                        DestinationTile(
+                          controller: toController,
+                          labelName: 'To',
+                          icon: const Icon(
+                            Icons.location_on_outlined,
+                            size: 30,
+                          ),
                         ),
-                      ),
-                      const Gap(20),
-                      if (state.tripList != null)
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: state.tripList!.trips?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            final trip = state.tripList!.trips![index];
-                            return ListTileCard(
-                              trip: trip,
-                              onPressed: () {
-                                _modelSheet(context, trip);
-                              },
-                            );
-                          },
+                        const Gap(15),
+                        TextButton(
+                          onPressed: _datePicker,
+                          child: DefaultText(
+                            dateController.text.isEmpty
+                                ? 'Choose a date'
+                                : 'Date: ${dateController.text}',
+                            color: Colors.blue,
+                          ),
                         ),
-                    ],
+                        const Gap(15),
+                        Center(
+                          child: CtmElevatedButton(
+                            onPressed: _findBuses,
+                            child: const DefaultText('Find Buses'),
+                          ),
+                        ),
+                        const Gap(20),
+                        if (state.tripList != null)
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: state.tripList!.trips?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              final trip = state.tripList!.trips![index];
+                              return ListTileCard(
+                                trip: trip,
+                                onPressed: () {
+                                  _modelSheet(context, trip);
+                                },
+                              );
+                            },
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),

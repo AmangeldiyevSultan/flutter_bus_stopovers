@@ -57,7 +57,11 @@ class BusBloc extends Bloc<BusEvent, BusState> {
       ),
     );
     try {
-      final tripList = await _busRepository.getAvailableBuses();
+      final tripList = await _busRepository.getAvailableBuses(
+        from: event.from,
+        to: event.to,
+        date: event.date,
+      );
       emit(
         BusState.idle(
           tripList: tripList,
