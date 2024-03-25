@@ -45,9 +45,9 @@ class _BusScreenState extends State<BusScreen> {
     }
     _busBloc.add(
       BusEvent.fetchBuses(
-        from: fromController.text,
-        to: toController.text,
-        date: dateController.text,
+        from: fromController.text.trim(),
+        to: toController.text.trim(),
+        date: dateController.text.trim(),
       ),
     );
   }
@@ -89,19 +89,7 @@ class _BusScreenState extends State<BusScreen> {
                 padding: const EdgeInsets.all(15),
                 child: RefreshIndicator(
                   color: Colors.black,
-                  onRefresh: () async {
-                    if (fromController.text.isNotEmpty &&
-                        toController.text.isNotEmpty &&
-                        dateController.text.isNotEmpty) {
-                      _busBloc.add(
-                        BusEvent.fetchBuses(
-                          from: fromController.text,
-                          to: toController.text,
-                          date: dateController.text,
-                        ),
-                      );
-                    }
-                  },
+                  onRefresh: _onRefresh,
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: Column(
@@ -170,6 +158,20 @@ class _BusScreenState extends State<BusScreen> {
         );
       },
     );
+  }
+
+  Future<void> _onRefresh() async {
+    if (fromController.text.isNotEmpty &&
+        toController.text.isNotEmpty &&
+        dateController.text.isNotEmpty) {
+      _busBloc.add(
+        BusEvent.fetchBuses(
+          from: fromController.text.trim(),
+          to: toController.text.trim(),
+          date: dateController.text.trim(),
+        ),
+      );
+    }
   }
 
   PersistentBottomSheetController<void> _modelSheet(

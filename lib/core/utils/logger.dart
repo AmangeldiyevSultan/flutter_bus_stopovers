@@ -173,7 +173,9 @@ final class LoggerLogging extends Logger {
     }
     logging.hierarchicalLoggingEnabled = true;
 
-    _logger.onRecord.where((event) => event.loggerName == 'BusStopLogger').listen((event) {
+    _logger.onRecord
+        .where((event) => event.loggerName == 'BusStopLogger')
+        .listen((event) {
       final logMessage = event.toLogMessage();
       final message = options.formatter?.call(logMessage, options) ??
           _formatLoggerMessage(log: logMessage, options: options);
@@ -221,7 +223,8 @@ String _formatLoggerMessage({
 
 extension on DateTime {
   /// Transforms DateTime to String with format: 00:00:00
-  String formatTime() => [hour, minute, second].map((i) => i.toString().padLeft(2, '0')).join(':');
+  String formatTime() =>
+      [hour, minute, second].map((i) => i.toString().padLeft(2, '0')).join(':');
 }
 
 extension on logging.LogRecord {
